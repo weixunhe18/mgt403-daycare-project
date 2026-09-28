@@ -69,6 +69,11 @@ ALPHA = 0.05                          # test level, also drives the 95% CIs
 
 
 def ensure_dirs() -> None:
-    """Create the output/intermediate dirs if a fresh clone is missing them."""
-    for d in (INTERIM, PROCESSED, FIGURES, TABLES):
+    """Create the working dirs if a fresh clone is missing them.
+
+    git cannot track empty directories, and data/raw/ is gitignored, so a
+    clone arrives without the download folders. Run this before downloading.
+    """
+    raw_subdirs = (RAW / "ndcp", RAW / "cpi", RAW / "oews", RAW / "acs")
+    for d in (*raw_subdirs, INTERIM, PROCESSED, FIGURES, TABLES):
         d.mkdir(parents=True, exist_ok=True)
