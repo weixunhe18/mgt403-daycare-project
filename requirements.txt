@@ -1,0 +1,12 @@
+# MGT-403 Data Project — pinned so teammates and graders get identical results.
+# Install:  pip install -r requirements.txt
+
+pandas==2.2.3
+numpy==2.1.3
+openpyxl==3.1.5          # pandas engine for reading NDCP2022.xlsx
+scipy==1.14.1            # ttest_1samp, t-distribution critical values (PS4 §2, §4)
+statsmodels==0.14.4      # OLS with inference (PS5 §7, project §4)
+matplotlib==3.9.2        # histograms, year-trend plots
+requests==2.32.3         # Census API pulls (PS5 §1)
+pyarrow==18.1.0          # parquet round-trips that preserve string dtypes
+jupyterlab==4.3.4
