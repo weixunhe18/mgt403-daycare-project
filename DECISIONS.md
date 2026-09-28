@@ -68,6 +68,44 @@ to check sensitivity later.
 round-trip can't reintroduce the leading-zero bug.
 **Affects:** all.
 
+## 2026-09-28 — Metro sample built: 1,236 counties, 390 metro areas  (Weixun)
+**Decision:** The PS4/PS5/project county set is the inner join of NDCP prices
+and the metro rows of `county_oews_crosswalk.csv`, on `[county_fips, year]`.
+**Why:** 1,238 metro counties in the crosswalk; 1,236 match NDCP. Written to
+`data/processed/ps4_metro_prices_2015_2022.parquet` (29,619 county × year ×
+age-group rows).
+**Affects:** all.
+
+## 2026-09-28 — Two crosswalk counties have no NDCP match (kept as dropped)  (Weixun)
+**Decision:** `12025` (Miami–Fort Lauderdale–West Palm Beach, FL) and `51515`
+(Lynchburg, VA) appear in the crosswalk but not in NDCP; the inner join drops
+them. Not patched.
+**Why:** Both are retired FIPS codes — 12025 is the old Dade County (now
+Miami-Dade, 12086) and 51515 is Bedford city VA, which reverted to town status
+in 2013 and folded into Bedford County (51019). NDCP uses current codes.
+Remapping them would double-count if the successor county is already present.
+**Affects:** all. Worth a sentence in the project appendix.
+
+## 2026-09-28 — NDCP price missingness is real, not a merge failure  (Weixun)
+**Decision:** ~14–26% of metro county-years have no center-based median price.
+Rows kept with NaN; descriptives report N per cell rather than silently
+dropping.
+**Why:** Missingness by year (preschool): 2015 18.7%, 2016 16.9%, 2017–2020
+~13.9%, **2021 25.7%**, 2022 18.0%. It is evenly spread across age groups
+(16.83–16.89% overall), which is what a genuine survey gap looks like — a
+broken join would hit all three identically at 100% or skew by state. The
+assignment's ~1% missingness warning applies to BLS wage cells in PS5, not to
+NDCP prices.
+**Affects:** PS4 §2–§4. 2021's spike is worth a note when discussing trends.
+
+## 2026-09-28 — External validation against Appendix H  (Weixun)
+**Decision:** Treat the 2022 preschool extract as correct.
+**Why:** Our metro 2022 `MCPreschool` max is 496.30, exactly the top of
+quintile 5 in Appendix H Exhibit A; the min (86.19) falls inside quintile 1
+(83.23–113.80). Independent confirmation that the right column, year, and
+provider type were selected.
+**Affects:** PS4 §2.
+
 <!-- Add entries below. Things that will need one:
      - which NDCP columns map to center-based / median / preschool
      - how you handle counties missing prices in some years

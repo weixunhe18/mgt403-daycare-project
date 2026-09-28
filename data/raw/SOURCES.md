@@ -61,3 +61,10 @@ data handling decisions.
 Lives in `data/crosswalks/county_oews_crosswalk.csv` and **is** committed: it
 is small and not re-downloadable from a public URL. Maps county × year →
 `oews_area` (7 chars) + `area_title`.
+
+| Field | Value |
+|---|---|
+| Received | 2026-09-28, from the course site |
+| Size | 1,496,816 bytes; 25,859 data rows |
+| Columns | `county_fips, state_abbr, year, oews_area, area_title` |
+| Notes | Leading zeros intact as distributed (`01001`, `0033860`). Don't open and re-save it in Excel — that strips them. 1,238 counties carry a metro (`00…`) area code. |
