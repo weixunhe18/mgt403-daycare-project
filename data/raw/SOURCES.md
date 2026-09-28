@@ -16,11 +16,12 @@ data handling decisions.
 |---|---|
 | Source | U.S. Dept. of Labor, National Database of Childcare Prices |
 | Page | https://www.dol.gov/agencies/wb/topics/featured-childcare |
-| File | `ndcp/NDCP2022.xlsx` (county-level workbook, series through 2022) |
-| Downloaded | _YYYY-MM-DD_ |
-| By | _name_ |
-| Size / rows | _fill in_ |
-| Notes | Also save the Technical Report (Sept 2024) here — Appendix C is the county-level data dictionary. |
+| File | `ndcp/NDCP2022.xlsx` — https://www.dol.gov/sites/dolgov/files/WB/NDCP2022.xlsx |
+| Downloaded | 2026-09-28 |
+| By | Weixun He |
+| Size / rows | 91,691,849 bytes; sheet `County_LevelNDCP_v8_update2008_`, 48,309 rows × 370 cols, study years 2008–2022 |
+| Docs | `ndcp/National-Database-of-Childcare-Prices-Technical-Report.pdf` (Sept 2024, 154pp; **Appendix C p.51–66** is the county-level data dictionary) and `ndcp/NationalDatabaseofChildcarePricesTechnicalGuide-2022.pdf` |
+| Notes | dol.gov sits behind Akamai and returns 403 to a bare `curl`; full browser headers (UA + `Sec-Fetch-*` + `Referer`) get through. |
 
 ## 2. CPI-U — inflation adjustment (PS4 §3, PS5 §5, project)
 
