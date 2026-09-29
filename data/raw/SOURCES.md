@@ -27,12 +27,13 @@ data handling decisions.
 
 | Field | Value |
 |---|---|
-| Source | BLS series **CUUR0000SA0**, annual averages |
+| Source | BLS series **CUUR0000SA0**, All items, U.S. city average, not seasonally adjusted, 1982-84 = 100 |
 | Page | https://www.bls.gov/cpi |
-| File | `cpi/cpi_u_cuur0000sa0_annual.csv` |
-| Downloaded | _YYYY-MM-DD_ |
-| By | _name_ |
-| Notes | Annual averages, not-seasonally-adjusted. Record which years you pulled. |
+| File | `cpi/cpi_u_cuur0000sa0_monthly.txt` |
+| Retrieved | 2026-09-29, pasted from the BLS series table |
+| By | Weixun He |
+| Coverage | **2016–2025 monthly.** 2015 is absent — still needed, the assignment range is 2015–2022 |
+| Notes | BLS publishes monthly values; the annual average is the mean of the 12 months. `src/deflate.py` computes it and asserts 2016/2019/2022 against published annual averages (240.007 / 255.657 / 292.655). Years with any month missing are skipped, so 2025 (`-(X)` for October) is excluded automatically. |
 
 ## 3. OEWS — childcare worker wages (PS5)
 
