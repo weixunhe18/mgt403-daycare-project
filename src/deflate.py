@@ -24,7 +24,7 @@ MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
 
 # BLS annual averages, for the assertion in verify(). Independent of the
 # arithmetic below -- if a paste is mangled, the check fails loudly.
-KNOWN_ANNUAL = {2016: 240.007, 2019: 255.657, 2022: 292.655}
+KNOWN_ANNUAL = {2015: 237.017, 2016: 240.007, 2019: 255.657, 2022: 292.655}
 
 
 def load_cpi_monthly(path=CPI_MONTHLY) -> pd.DataFrame:

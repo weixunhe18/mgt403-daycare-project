@@ -180,8 +180,7 @@ def trends(df: pd.DataFrame, path=None):
     fig.text(0.043, 0.965,
              f"Deflated with CPI-U (CUUR0000SA0, annual averages), constant "
              f"{BASE_YEAR} dollars. The 2021 dip in the full sample is largely "
-             "composition — that year has the fewest reporting counties. "
-             f"{min(years)}–{max(years)}; 2015 pending a CPI-U value.",
+             "composition — that year has the fewest reporting counties.",
              ha="left", fontsize=9.5, color=INK_MUTED)
 
     path = path or FIGURES / "ps4_trend_real_by_agegroup.png"
