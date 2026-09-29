@@ -109,6 +109,87 @@ def histograms(df: pd.DataFrame, stats: pd.DataFrame, path=None):
     return path
 
 
+def real_panel() -> pd.DataFrame:
+    """Metro sample with prices deflated to constant BASE_YEAR dollars."""
+    from .deflate import to_real
+    df = pd.read_parquet(SAMPLE)
+    df = to_real(df, "median_price")
+    return df[df["median_price_real"].notna()].copy()
+
+
+def balanced_counties(df: pd.DataFrame) -> set:
+    """Counties reporting a price in every year the CPI covers.
+
+    The share of counties reporting swings from 14% to 26% missing across
+    years, so a mean over 'whoever reported' mixes a real price trend with a
+    changing roster of counties. This isolates the roster that never changes.
+    """
+    pre = df[df["age_group"] == "preschool"]
+    n_years = pre["year"].nunique()
+    per_county = pre.groupby("county_fips")["year"].nunique()
+    return set(per_county[per_county == n_years].index)
+
+
+def trends(df: pd.DataFrame, path=None):
+    """Real price trend per age group: full sample vs balanced panel."""
+    bal = balanced_counties(df)
+
+    def series(frame):
+        return frame.pivot_table(index="year", columns="age_group",
+                                 values="median_price_real", aggfunc="mean",
+                                 observed=True)
+
+    all_s = series(df)
+    bal_s = series(df[df["county_fips"].isin(bal)])
+    years = all_s.index.to_list()
+
+    fig, axes = plt.subplots(1, 3, figsize=(12.5, 4.9), sharey=True,
+                             facecolor=SURFACE)
+    fig.subplots_adjust(wspace=0.09)
+
+    C_ALL, C_BAL = "#2a78d6", "#eb6834"
+
+    for i, (ax, group) in enumerate(zip(axes, SERIES)):
+        ax.set_facecolor(SURFACE)
+        ax.plot(years, all_s[group], color=C_ALL, linewidth=2,
+                marker="o", markersize=5, label="All reporting counties")
+        ax.plot(years, bal_s[group], color=C_BAL, linewidth=2,
+                marker="o", markersize=5, label=f"Balanced panel ({len(bal)})")
+
+        ax.set_title(LABEL[group], loc="left", fontsize=11.5, color=INK, pad=8)
+        ax.grid(axis="y", color=GRID, linewidth=0.7)
+        ax.set_axisbelow(True)
+        for side in ("top", "right", "left"):
+            ax.spines[side].set_visible(False)
+        ax.spines["bottom"].set_color(GRID)
+        ax.tick_params(colors=INK_MUTED, labelsize=9, length=0)
+        ax.set_xticks(years)
+        ax.set_xticklabels([str(y) for y in years], rotation=45, ha="right")
+        if i == 0:
+            ax.set_ylabel(f"Mean of county median prices\n"
+                          f"(constant {BASE_YEAR} $/week)",
+                          fontsize=9.5, color=INK_MUTED)
+
+    axes[0].legend(frameon=False, fontsize=9.5, loc="lower left",
+                   labelcolor=INK_MUTED)
+
+    fig.suptitle("Real childcare prices drifted up through 2020, then fell as "
+                 "inflation outran them",
+                 x=0.043, y=1.03, ha="left", fontsize=14, color=INK,
+                 fontweight="semibold")
+    fig.text(0.043, 0.965,
+             f"Deflated with CPI-U (CUUR0000SA0, annual averages), constant "
+             f"{BASE_YEAR} dollars. The 2021 dip in the full sample is largely "
+             "composition — that year has the fewest reporting counties. "
+             f"{min(years)}–{max(years)}; 2015 pending a CPI-U value.",
+             ha="left", fontsize=9.5, color=INK_MUTED)
+
+    path = path or FIGURES / "ps4_trend_real_by_agegroup.png"
+    fig.savefig(path, dpi=200, bbox_inches="tight", facecolor=SURFACE)
+    plt.close(fig)
+    return path, all_s, bal_s
+
+
 if __name__ == "__main__":
     ensure_dirs()
     df = load_2022()
@@ -116,3 +197,12 @@ if __name__ == "__main__":
     print(stats.to_string())
     stats.to_csv(TABLES / "ps4_descriptives_2022.csv")
     print("\nfigure:", histograms(df, stats))
+
+    real = real_panel()
+    path, all_s, bal_s = trends(real)
+    print("\n== mean county median price, constant 2022 $ ==")
+    print("all reporting counties:\n", all_s.round(1).to_string())
+    print("\nbalanced panel:\n", bal_s.round(1).to_string())
+    all_s.round(2).to_csv(TABLES / "ps4_trend_real_all.csv")
+    bal_s.round(2).to_csv(TABLES / "ps4_trend_real_balanced.csv")
+    print("\nfigure:", path)

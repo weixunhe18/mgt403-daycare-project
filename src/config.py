@@ -24,7 +24,7 @@ FIGURES = ROOT / "output" / "figures"
 TABLES = ROOT / "output" / "tables"
 
 NDCP_XLSX = RAW / "ndcp" / "NDCP2022.xlsx"
-CPI_CSV = RAW / "cpi" / "cpi_u_cuur0000sa0_annual.csv"
+CPI_MONTHLY = RAW / "cpi" / "cpi_u_cuur0000sa0_monthly.txt"
 OEWS_CROSSWALK = CROSSWALKS / "county_oews_crosswalk.csv"
 
 # --------------------------------------------------------------------------
